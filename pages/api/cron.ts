@@ -40,7 +40,7 @@ export default async function handler(
     });
 
     const currentDayNumber = dayjs().weekday();
-    const isMonday = currentDayNumber === 0;
+    const isMonday = false; // currentDayNumber === 0;
 
     const url = new URL(`https://api.telegram.org/${BOT_ID}/sendMessage`);
 
@@ -68,11 +68,11 @@ export default async function handler(
             return;
           }
 
-          count++;
-
-          output += `\n${numbers[i] ?? "--"} <b>${day.format(
+          output += `\n${numbers[count] ?? "--"} <b>${day.format(
             "h:mm A"
           )}</b> - <a href='${item.htmlLink}'>${item.summary}</a>`;
+
+          count++;
         });
 
       if (count === 0) {
@@ -84,16 +84,12 @@ export default async function handler(
       url.searchParams.append("text", output);
     }
 
-    const resp = await fetch(url);
-    const data = await resp.json();
+    const data = await fetch(url);
+    const { ok } = (await data.json()) as { ok: boolean };
 
-    if (!data.ok) {
-      res.status(500).json({ ok: false });
-
-      return;
-    }
-
-    res.status(200).json({ ok: true });
+    ok
+      ? res.status(200).json({ ok: true })
+      : res.status(500).json({ ok: false });
   } catch (error) {
     console.error(error);
 
