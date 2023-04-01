@@ -1,0 +1,13 @@
+name: Send event to lead chat
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+
+jobs:
+  build:
+    name: Send event
+    runs-on: ubuntu-latest
+    steps:
+      - name: cURL request
+        run: curl https://ng-lead-bot.vercel.app/api/cron
