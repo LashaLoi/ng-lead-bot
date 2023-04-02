@@ -1,8 +1,35 @@
+import { KeyboardEventHandler, useState } from "react";
+import { useRouter } from "next/router";
 import Head from "next/head";
-import Image from "next/image";
+
 import styles from "../styles/Home.module.css";
 
 export default function Home() {
+  const [value, setValue] = useState("");
+  const router = useRouter();
+
+  const handleClick = async () => {
+    if (value.trim() === "") {
+      return;
+    }
+
+    if (process.env.NEXT_PUBLIC_SECRET_PASSWORD !== value) {
+      return;
+    }
+
+    localStorage.setItem("auth", "true");
+    router.push("/bot");
+  };
+
+  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
+    if (event.key === "Enter") {
+      handleClick();
+    }
+  };
+
+  const handleChange = ({ target: { value } }: { target: { value: string } }) =>
+    setValue(value);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -13,8 +40,21 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a href="https://t.me/ng_lead_minsk_bot">NGBOT</a>
+          <a href="https://t.me/ng_lead_minsk_bot">NGBOT</a>
         </h1>
+        <div className={styles.controlls}>
+          <input
+            placeholder="message"
+            type="password"
+            value={value}
+            onChange={handleChange}
+            className={styles.input}
+            onKeyDown={handleKeyDown}
+          />
+          <button onClick={handleClick} className={styles.button}>
+            Sing in
+          </button>
+        </div>
       </main>
 
       <footer className={styles.footer}>

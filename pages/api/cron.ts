@@ -5,7 +5,15 @@ import { dayjs } from "../../dayjs";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 
-const { CLIENT_EMAIL, PRIVATE_KEY, CALENDAR_ID, BOT_ID, CHAT_ID } = process.env;
+const {
+  CLIENT_EMAIL,
+  PRIVATE_KEY,
+  CALENDAR_ID,
+  BOT_ID,
+  CHAT_ID,
+  TEST_CHAT_ID,
+  NODE_ENV,
+} = process.env;
 
 const options = {
   email: CLIENT_EMAIL,
@@ -24,13 +32,6 @@ export default async function handler(
   _req: NextApiRequest,
   res: NextApiResponse<{}>
 ) {
-  if (!CLIENT_EMAIL || !PRIVATE_KEY || !CALENDAR_ID || !BOT_ID || !CHAT_ID) {
-    return res.json({
-      ok: false,
-      message: "No env variables",
-    });
-  }
-
   try {
     const {
       data: { items = [] },
@@ -44,7 +45,10 @@ export default async function handler(
 
     const url = new URL(`https://api.telegram.org/${BOT_ID}/sendMessage`);
 
-    url.searchParams.append("chat_id", CHAT_ID);
+    url.searchParams.append(
+      "chat_id",
+      NODE_ENV === "development" ? TEST_CHAT_ID! : CHAT_ID!
+    );
     url.searchParams.append("parse_mode", "HTML");
     url.searchParams.append("disable_web_page_preview", "true");
 

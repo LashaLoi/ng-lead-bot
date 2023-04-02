@@ -108,6 +108,35 @@
   margin-left: 0.5rem;
 }
 
+.controlls {
+  margin-top: 20px;
+}
+
+.input {
+  height: 50px;
+  width: 200px;
+  border: 1px solid #eee;
+
+  outline: none;
+
+  text-indent: 20px;
+}
+
+/* .input::placeholder { */
+/* margin: 0 10px; */
+/* } */
+
+.button {
+  height: 50px;
+  min-width: 50px;
+  border: 1px solid #eee;
+  cursor: pointer;
+}
+
+.button:active {
+  background: #eaeaea;
+}
+
 @media (max-width: 600px) {
   .grid {
     width: 100%;
