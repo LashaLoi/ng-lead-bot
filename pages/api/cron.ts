@@ -72,9 +72,11 @@ export default async function handler(
             return;
           }
 
-          output += `\n${numbers[count] ?? "--"} <b>${day.format(
-            "h:mm A"
-          )}</b> - <a href='${item.htmlLink}'>${item.summary}</a>`;
+          output += `\n${numbers[count] ?? "--"} <b>${day
+            .tz("Europe/Minsk")
+            .format("h:mm A")}</b> - <a href='${item.htmlLink}'>${
+            item.summary
+          }</a>`;
 
           count++;
         });
