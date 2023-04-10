@@ -33,6 +33,9 @@ export default async function handler(
   res: NextApiResponse<{}>
 ) {
   try {
+    const currentDay = dayjs();
+    const currentDayFormat = currentDay.tz("Europe/Minsk").format("DD/MM/YYYY");
+
     const {
       data: { items = [] },
     } = await calendar.events.list({
@@ -40,8 +43,7 @@ export default async function handler(
       auth: client,
     });
 
-    const currentDayNumber = dayjs().weekday();
-    const isMonday = false; // currentDayNumber === 0;
+    const isMonday = false;
 
     const url = new URL(`https://api.telegram.org/${BOT_ID}/sendMessage`);
 
@@ -65,10 +67,13 @@ export default async function handler(
             ? 1
             : -1
         )
-        .forEach((item, i) => {
+        .forEach((item) => {
           const day = dayjs(item.start!.dateTime!);
 
-          if (currentDayNumber !== day.weekday()) {
+          const isCurrentDay =
+            currentDayFormat !== day.tz("Europe/Minsk").format("DD/MM/YYYY");
+
+          if (isCurrentDay) {
             return;
           }
 
@@ -85,7 +90,7 @@ export default async function handler(
         output = "⭐️ <b>Сегодня нет мероприятий</b> ⭐️";
       }
 
-      output += `\n\n 💒 ${dayjs().format("DD/MM/YYYY")}`;
+      output += `\n\n 💒 ${currentDayFormat}`;
 
       url.searchParams.append("text", output);
     }
